@@ -1,0 +1,48 @@
+#!/usr/bin/env ruby
+
+$LOAD_PATH << File.dirname(__FILE__) + '/../lib' if $0 == __FILE__
+require 'optparse'
+require 'probable_happiness'
+
+options = {}
+
+option_parser = OptionParser.new do |opts|
+  opts.banner = "Version #{ProbableHappiness::VERSION} of Probable Happiness\n" \
+    "Usage: #{File.basename(__FILE__)} [options] [file]"
+
+  opts.on('-s', '--start-date START_DATE', 'The first day of the window to calculate on. Format: YYYY-DD-MM.') do |start_date|
+    options[:start_date] = start_date
+  end
+
+  opts.on('-s', '--end-date END_DATE', 'The last day of the window to calculate on. Format: YYYY-DD-MM.') do |end_date|
+    options[:end_date] = end_date
+  end
+
+  opts.on('-t', '--ticker TICKER', 'The name of the stock to calculate.') do |ticker|
+    options[:ticker] = ticker
+  end
+
+  opts.on('-h', '--help', 'Prints help') do
+    $stderr.puts opts
+    exit
+  end
+end
+
+option_parser.parse!
+
+begin
+  raise OptionParser::MissingArgument.new('--start-date') if options[:start_date].nil?
+  raise OptionParser::MissingArgument.new('--end-date') if options[:end_date].nil?
+  raise OptionParser::MissingArgument.new('--ticker') if options[:ticker].nil?
+
+  ProbableHappiness.run(options)
+rescue OptionParser::MissingArgument => ex
+  $stderr.puts ex.message
+  $stderr.puts option_parser
+  exit 2
+rescue Exception => e
+  $stderr.puts 'Uh oh, something went wrong!'
+  $stderr.puts e.message
+  $stderr.puts e.backtrace.join("\n")
+  exit 1
+end

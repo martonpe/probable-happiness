@@ -4,8 +4,7 @@ require "probable_happiness/runner"
 RSpec.describe ProbableHappiness::Runner do
   let(:options) do
     {
-      start_date: '2015-01-23',
-      end_date: '2018-01-28',
+      start_date: '2018-01-22',
       ticker: 'AAPL',
     }
   end
@@ -25,7 +24,7 @@ RSpec.describe ProbableHappiness::Runner do
 
   describe '#start_date' do
     it 'parses the date correctly' do
-      expect(runner.start_date).to eq Date.new(2015, 1, 23)
+      expect(runner.start_date).to eq Date.new(2018, 1, 22)
     end
 
     it 'throws an error if start_date is not present' do
@@ -35,19 +34,20 @@ RSpec.describe ProbableHappiness::Runner do
   end
 
   describe '#end_date' do
-    it 'parses the date correctly' do
-      expect(runner.end_date).to eq Date.new(2018, 1, 28)
-    end
-
-    it 'throws an error if end_date is not present' do
-      options.delete(:end_date)
-      expect { runner.end_date }.to raise_error(KeyError)
+    it 'is set to today' do
+      expect(runner.end_date).to eq Date.today
     end
   end
 
   describe '#call' do
-    it 'invokes Calculator#call and Tweeter#tweet' do
-      expect_any_instance_of(ProbableHappiness::Calculator).to receive(:call)
+    it 'raises error if start date is in the future' do
+      options[:start_date] = Date.today.next_day.strftime('%Y-%m-%d')
+      expect { runner.call }.to raise_error(ArgumentError)
+    end
+
+    it 'invokes Calculator and Tweeter#tweet' do
+      expect_any_instance_of(ProbableHappiness::Calculator).to receive(:max_drawdown)
+      expect_any_instance_of(ProbableHappiness::Calculator).to receive(:total_return)
       expect_any_instance_of(ProbableHappiness::Tweeter).to receive(:tweet)
       runner.call
     end

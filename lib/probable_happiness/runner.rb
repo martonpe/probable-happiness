@@ -11,10 +11,11 @@ module ProbableHappiness
     end
 
     def call
+      raise ArgumentError.new("start_date must be in the past") unless end_date > start_date
+
       calculator = Calculator.new(ticker, start_date, end_date)
-      calculator.call
       tweet =  "I wish I bought #{ticker} on #{start_date}! "
-      tweet += "I would have made #{calculator.total_return} with a drawdown of #{calculator.max_drawdown} by #{end_date}. #SoSad"
+      tweet += "I would have made #{calculator.total_return}% with a drawdown of #{calculator.max_drawdown}%. #SoSad"
       Tweeter.new.tweet(tweet)
     end
 
@@ -27,7 +28,7 @@ module ProbableHappiness
     end
 
     def end_date
-      Date.parse(options.fetch(:end_date))
+      Date.today
     end
   end
 end

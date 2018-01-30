@@ -1,28 +1,35 @@
 # Probable Happiness
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/probable/happiness`. To experiment with that code, run `bin/console` for an interactive prompt.
+A stock return calculator that tweets its response
 
-TODO: Delete this and the text above, and describe your gem
+## Getting started
 
-## Installation
+### Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'probable-happiness'
+```
+$ git clone https://github.com/martonpe/probable-happiness.git
+$ bin/setup
 ```
 
-And then execute:
+### Required environment variables
 
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install probable-happiness
+* `QUANDL_API_KEY`: You own API key to the Quandl API
 
 ## Usage
 
-TODO: Write usage instructions here
+```
+Version 0.1.0 of Probable Happiness
+Usage: probable_happiness [options] [file]
+    -s, --start-date START_DATE      The first day of the window to calculate on. Format: YYYY-DD-MM.
+    -t, --ticker TICKER              The name of the stock to calculate.
+    -h, --help                       Prints help
+```
+
+Try For examle:
+```
+$ bin/probable_happiness -s 2018-01-11 -t AAPL
+I wish I bought AAPL on 2018-01-11! I would have made -2.15% with a drawdown of 4.55%. #SoSad
+```
 
 ## Development
 
